@@ -1,4 +1,4 @@
-const RecordModel = require("../Models/records");
+const RecordModel = require("../models/records");
 
 const createRecords = async (req, resp, next) => {
   try {
@@ -71,7 +71,7 @@ const deleteRecord = async (req, resp, next) => {
 
 module.exports = {
   createRecord: createRecords,
-  getAllRecords: getRecords,
+  getRecords: getRecords,
   getRecordById,
   updateRecord,
   deleteRecord,

@@ -1,12 +1,11 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const { errorHandler } = require("./middleware/errorHandler");
+const { errorHandler } = require("./middleware/errorHandler.js");
 require("dotenv").config();
-// const { connectDB } = require("./config/database.js");
+// const connectDB = require("./config/db.js");
 
 // connectDB();
-
 app.use(cors());
 app.use(express.json());
 

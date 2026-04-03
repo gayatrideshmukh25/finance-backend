@@ -1,8 +1,4 @@
-const roles = {
-  admin,
-  viewer,
-  Analyst,
-};
+const roles = ["admin", "viewer", "analyst"];
 
 exports.allowRoles = (...roles) => {
   return (req, res, next) => {

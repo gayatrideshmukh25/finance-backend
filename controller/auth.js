@@ -1,16 +1,16 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const AuthModel = require("../../Models/auth.js");
-const { ok, created, fail } = require("../../utils/response.js");
+const UserModel = require("../models/users.js");
+const { ok, created, fail } = require("../utils/response.js");
 require("dotenv").config();
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
       return fail(res, "Email and Password are required fields", 400);
     }
-    let user = await AuthModel.findByEmail(email);
+    let user = await UserModel.findByEmail(email);
     if (!user) {
       return fail(res, "Invalid Credentials", 401);
     }
@@ -37,7 +37,7 @@ const login = async (req, res) => {
   }
 };
 
-const logout = async (req, res) => {
+const logout = async (req, res, next) => {
   try {
     clearToken(req.user.id);
     return ok(res, null, "Logged out successfully");

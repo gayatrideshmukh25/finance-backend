@@ -1,4 +1,4 @@
-const BaseModel = require("./baseModel");
+const BaseModel = require("./baseModel.js");
 
 class RecordModel extends BaseModel {
   constructor() {

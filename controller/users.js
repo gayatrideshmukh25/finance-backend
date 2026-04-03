@@ -1,12 +1,22 @@
-const { UserModel } = require("../Models/users");
 const { ok, created, fail } = require("../utils/response.js");
+const UserModel = require("../models/users.js");
+const bcrypt = require("bcrypt");
 const createUser = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
-      return fail(res, "Name, Email, and Password are required fields", 400);
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+      return fail(
+        res,
+        "Username, Email, and Password are required fields",
+        400,
+      );
     }
-    const newUser = await UserModel.create({ name, email, password });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await UserModel.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
     return created(res, newUser, "User created successfully");
   } catch (err) {
     next(err);

@@ -1,3 +1,4 @@
+const db = require("../config/db");
 class BaseModel {
   constructor(tableName) {
     this.tableName = tableName;
@@ -45,7 +46,14 @@ class BaseModel {
     values.push(id);
     const query = `UPDATE ${this.tableName} SET ${setClauses} WHERE id = ?`;
     const [result] = await db.execute(query, values);
-    return result.affectedRows > 0;
+    if (result.affectedRows === 0) {
+      return null;
+    }
+    const [rows] = await db.execute(
+      `SELECT * FROM ${this.tableName} WHERE id = ?`,
+      [id],
+    );
+    return rows[0];
   };
 
   delete = async (id) => {

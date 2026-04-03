@@ -1,17 +1,32 @@
 const express = require("express");
 const router = express.Router();
-const ctrl = require("./controller/users.js");
-const { authentication } = require("./middleware/auth.js");
+const ctrl = require("../controller/users.js");
+const { authentication } = require("../middleware/authHandler.js");
+const { allowRoles } = require("../middleware/rbac.js");
 
-router.post("/getAllUsers", authentication, allowRoles("admin"), ctrl.getAll);
-router.post("/createUser", authentication, allowRoles("admin"), ctrl.create);
-router.get("/getUser/:id", authentication, allowRoles("admin"), ctrl.getById);
-router.put("/updateUser/:id", authentication, allowRoles("admin"), ctrl.update);
+router.post("/getAllUsers", authentication, allowRoles("admin"), ctrl.getUsers);
+router.post(
+  "/createUser",
+  authentication,
+  allowRoles("admin"),
+  ctrl.createUser,
+);
+router.get(
+  "/getUser/:id",
+  authentication,
+  allowRoles("admin"),
+  ctrl.getUserById,
+);
+router.put(
+  "/updateUser/:id",
+  authentication,
+  allowRoles("admin"),
+  ctrl.updateUser,
+);
 router.delete(
   "/deleteUser/:id",
   authentication,
   allowRoles("admin"),
-  ctrl.delete,
+  ctrl.deleteUser,
 );
-
 module.exports = router;

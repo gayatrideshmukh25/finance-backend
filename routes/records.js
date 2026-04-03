@@ -1,31 +1,36 @@
 const express = require("express");
 const router = express.Router();
-const ctrl = require("./controller/records.js");
-const { authentication } = require("./middleware/auth.js");
-
+const ctrl = require("../controller/records.js");
+const { authentication } = require("../middleware/authHandler.js");
+const { allowRoles } = require("../middleware/rbac.js");
 router.post(
   "/getAllRecords",
   authentication,
   allowRoles("admin", "Analyst", "viewer"),
-  ctrl.getAll,
+  ctrl.getRecords,
 );
-router.post("/createRecord", authentication, allowRoles("admin"), ctrl.create);
+router.post(
+  "/createRecord",
+  authentication,
+  allowRoles("admin"),
+  ctrl.createRecord,
+);
 router.get(
   "/getRecord/:id",
   authentication,
   allowRoles("admin", "Analyst", "viewer"),
-  ctrl.getById,
+  ctrl.getRecordById,
 );
 router.put(
   "/updateRecord/:id",
   authentication,
   allowRoles("admin"),
-  ctrl.update,
+  ctrl.updateRecord,
 );
 router.delete(
   "/deleteRecord/:id",
   authentication,
   allowRoles("admin"),
-  ctrl.delete,
+  ctrl.deleteRecord,
 );
 module.exports = router;

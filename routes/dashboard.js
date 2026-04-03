@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const ctrl = require("./controller/dashboard.js");
-const { authentication } = require("./middleware/auth.js");
+const ctrl = require("../controller/dashboard.js");
+const { authentication } = require("../middleware/authHandler.js");
+const { allowRoles } = require("../middleware/rbac.js");
 
 router.get(
   "/",

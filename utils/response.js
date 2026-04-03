@@ -5,7 +5,7 @@ const ok = (res, data, message = "Success") => {
 const created = (res, data, message = "Resource Created") => {
   res.status(201).json({ success: true, message, data });
 };
-const fail = (res, message = "Operation Failed", statusCode = 400) => {
+const fail = (res, message = "Operation Failed", statusCode) => {
   res.status(statusCode).json({ success: false, message });
 };
 
