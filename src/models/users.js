@@ -14,10 +14,5 @@ class UserModel extends BaseModel {
     const [rows] = await db.execute(query, [username]);
     return rows.length ? rows[0].id : null;
   }
-  async findById(id) {
-    const query = "SELECT * FROM users WHERE id = ?";
-    const results = await db.execute(query, [id]);
-    return results[0][0] || null;
-  }
 }
 module.exports = new UserModel();

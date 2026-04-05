@@ -38,15 +38,16 @@ const login = async (req, res, next) => {
 };
 const getProfile = async (req, res, next) => {
   try {
-    const user = await UserModel.findById(req.user.id);
+    const user = await UserModel.getById(req.user.id);
     if (!user) {
       return fail(res, "User not found", 404);
     }
     return ok(res, {
       id: user.id,
-      name: user.name,
+      name: user.username,
       email: user.email,
       role: user.role,
+      status: user.status,
     });
   } catch (err) {
     next(err);
@@ -56,7 +57,7 @@ const getProfile = async (req, res, next) => {
 const updateProfile = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
-    const user = await UserModel.findById(req.user.id);
+    const user = await UserModel.getById(req.user.id);
     if (!user) {
       return fail(res, "User not found", 404);
     }
@@ -70,9 +71,10 @@ const updateProfile = async (req, res, next) => {
     const updatedUser = await UserModel.update(req.user.id, updateData);
     return ok(res, {
       id: updatedUser.id,
-      name: updatedUser.name,
+      name: updatedUser.username,
       email: updatedUser.email,
       role: updatedUser.role,
+      status: updatedUser.status,
     });
   } catch (err) {
     next(err);
@@ -81,7 +83,6 @@ const updateProfile = async (req, res, next) => {
 
 module.exports = {
   login,
-  logout,
   getProfile,
   updateProfile,
 };

@@ -49,7 +49,7 @@ class BaseModel {
   async getById(id) {
     const query = `SELECT * FROM ${this.tableName} WHERE id = ?`;
     const [rows] = await db.execute(query, [id]);
-
+    console.log("getById results:", rows);
     return this.excludeFields(rows[0]);
   }
 
