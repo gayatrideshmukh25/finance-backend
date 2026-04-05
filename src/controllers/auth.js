@@ -39,10 +39,9 @@ const login = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
   try {
-    clearToken(req.user.id);
     return ok(res, null, "Logged out successfully");
   } catch (err) {
-    next(err);
+    next(err, "Logout failed", 500);
   }
 };
 const getProfile = async (req, res, next) => {

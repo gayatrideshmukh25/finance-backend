@@ -1,6 +1,7 @@
 const { ok, created, fail } = require("../utils/response.js");
 const UserModel = require("../models/users.js");
 const bcrypt = require("bcrypt");
+require("dotenv").config();
 const createUser = async (req, res, next) => {
   try {
     const { username, email, password, role, status } = req.body;

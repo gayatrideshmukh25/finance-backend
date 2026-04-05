@@ -34,7 +34,11 @@ const createRecords = async (req, resp, next) => {
       description,
       date,
     });
-    resp.status(201).json({ success: true, data: newRecord });
+    resp.status(201).json({
+      success: true,
+      data: newRecord,
+      message: "Record created successfully",
+    });
   } catch (err) {
     next(err);
   }
@@ -75,7 +79,11 @@ const updateRecord = async (req, resp, next) => {
     if (!updatedRecord) {
       return resp.status(404).json({ message: "Record Not Found" });
     }
-    resp.json({ success: true, data: updatedRecord });
+    resp.json({
+      success: true,
+      data: updatedRecord,
+      message: "Record updated successfully",
+    });
   } catch (err) {
     next(err);
   }
