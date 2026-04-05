@@ -1,66 +1,108 @@
 const db = require("../config/db");
+
 class BaseModel {
-  constructor(tableName) {
+  constructor(tableName, hiddenFields = []) {
     this.tableName = tableName;
+    this.hiddenFields = hiddenFields;
   }
+
+  excludeFields(data) {
+    if (Array.isArray(data)) {
+      return data.map((item) => this.excludeFields(item));
+    }
+
+    if (data && typeof data === "object") {
+      const filtered = { ...data };
+      this.hiddenFields.forEach((field) => {
+        delete filtered[field];
+      });
+      return filtered;
+    }
+
+    return data;
+  }
+
   async getAll(filters = {}, options = {}) {
     const { limit = 10, offset = 0 } = options;
+    const safeLimit = Number(limit) || 10;
+    const safeOffset = Number(offset) || 0;
     const whereClauses = [];
     const values = [];
-    let index = 1;
     for (const [key, value] of Object.entries(filters)) {
-      whereClauses.push(`${key} = $${index}`);
-      values.push(value);
-      index++;
+      if (value !== undefined && value !== null) {
+        whereClauses.push(`${key} = ?`);
+        values.push(value);
+      }
     }
+
     const whereString =
       whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
-    const query = `SELECT * FROM ${this.tableName} ${whereString} LIMIT $${index} OFFSET $${index + 1}`;
-    values.push(limit, offset);
+
+    const query = `
+        SELECT * FROM ${this.tableName}
+        ${whereString}
+        LIMIT ${safeOffset}, ${safeLimit}
+      `;
+
+    values.push(safeLimit, safeOffset); // 🔥 MUST
+
+    console.log(query, values); // debug
+
     const [rows] = await db.execute(query, values);
-    return rows;
+
+    return this.excludeFields(rows);
   }
 
-  getById = async (id) => {
+  async getById(id) {
     const query = `SELECT * FROM ${this.tableName} WHERE id = ?`;
     const [rows] = await db.execute(query, [id]);
-    return rows[0];
-  };
 
-  create = async (recordData) => {
+    return this.excludeFields(rows[0]);
+  }
+
+  async create(recordData) {
     const columns = Object.keys(recordData).join(", ");
     const placeholders = Object.keys(recordData)
       .map(() => "?")
       .join(", ");
     const values = Object.values(recordData);
-    const query = `INSERT INTO ${this.tableName} (${columns}) VALUES (${placeholders})`;
-    const [result] = await db.execute(query, values);
-    return { id: result.insertId, ...recordData };
-  };
 
-  update = async (id, updateData) => {
+    const query = `INSERT INTO ${this.tableName} (${columns}) VALUES (${placeholders})`;
+
+    const [result] = await db.execute(query, values);
+    const excludedData = this.excludeFields(result[0]);
+    return { id: result.insertId, ...excludedData };
+  }
+
+  async update(id, updateData) {
     const setClauses = Object.keys(updateData)
       .map((key) => `${key} = ?`)
       .join(", ");
-    const values = Object.values(updateData);
-    values.push(id);
+
+    const values = [...Object.values(updateData), id];
+
     const query = `UPDATE ${this.tableName} SET ${setClauses} WHERE id = ?`;
+
     const [result] = await db.execute(query, values);
+
     if (result.affectedRows === 0) {
       return null;
     }
+
     const [rows] = await db.execute(
       `SELECT * FROM ${this.tableName} WHERE id = ?`,
       [id],
     );
-    return rows[0];
-  };
 
-  delete = async (id) => {
+    return this.excludeFields(rows[0]); // 🔥 applied
+  }
+
+  async delete(id) {
     const query = `DELETE FROM ${this.tableName} WHERE id = ?`;
     const [result] = await db.execute(query, [id]);
+
     return result.affectedRows > 0;
-  };
+  }
 }
 
 module.exports = BaseModel;

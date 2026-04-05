@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const ctrl = require("../controller/dashboard.js");
+const ctrl = require("../controllers/dashboard.js");
 const { authentication } = require("../middleware/authHandler.js");
 const { allowRoles } = require("../middleware/rbac.js");
 
@@ -13,13 +13,13 @@ router.get(
 router.get(
   "/summary",
   authentication,
-  allowRoles("admin", "analyst", "viewer"),
+  allowRoles("admin", "analyst"),
   ctrl.getSummary,
 );
 router.get(
   "/analytics",
   authentication,
-  allowRoles("admin", "analyst", "viewer"),
+  allowRoles("admin", "analyst"),
   ctrl.getAnalytics,
 );
 

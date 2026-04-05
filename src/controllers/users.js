@@ -3,7 +3,7 @@ const UserModel = require("../models/users.js");
 const bcrypt = require("bcrypt");
 const createUser = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, role, status } = req.body;
     if (!username || !email || !password) {
       return fail(
         res,
@@ -16,6 +16,8 @@ const createUser = async (req, res, next) => {
       username,
       email,
       password: hashedPassword,
+      role: role,
+      status: status,
     });
     return created(res, newUser, "User created successfully");
   } catch (err) {

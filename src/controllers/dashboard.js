@@ -1,7 +1,7 @@
 const dashboardModel = require("../models/dashboard.js");
 const { ok, fail } = require("../utils/response.js");
 
-exports.getDashboardData = async (req, res) => {
+exports.getDashboardData = async (req, res, next) => {
   try {
     const summary = await dashboardModel.getSummary();
     const counts = await dashboardModel.getCounts();
@@ -26,7 +26,7 @@ exports.getDashboardData = async (req, res) => {
   }
 };
 
-exports.getSummary = async (req, res) => {
+exports.getSummary = async (req, res, next) => {
   try {
     const summary = await dashboardModel.getSummary();
     return ok(
@@ -43,7 +43,7 @@ exports.getSummary = async (req, res) => {
   }
 };
 
-exports.getAnalytics = async (req, res) => {
+exports.getAnalytics = async (req, res, next) => {
   try {
     const analytics = await dashboardModel.getAnalytics();
     return ok(res, analytics, "Analytics data retrieved successfully");

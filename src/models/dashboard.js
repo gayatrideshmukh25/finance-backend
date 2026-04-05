@@ -33,7 +33,7 @@ exports.getCategoryTotals = async () => {
 
 exports.getRecentActivity = async () => {
   const [rows] = await db.execute(`
-    SELECT id, title, amount, type, created_at
+    SELECT id, amount, type, created_at
     FROM records
     ORDER BY created_at DESC
     LIMIT 5

@@ -45,8 +45,52 @@ const logout = async (req, res, next) => {
     next(err);
   }
 };
+const getProfile = async (req, res, next) => {
+  try {
+    const user = await UserModel.findById(req.user.id);
+    if (!user) {
+      return fail(res, "User not found", 404);
+    }
+    return ok(res, {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const updateProfile = async (req, res, next) => {
+  try {
+    const { name, email, password } = req.body;
+    const user = await UserModel.findById(req.user.id);
+    if (!user) {
+      return fail(res, "User not found", 404);
+    }
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(password, salt);
+    }
+    const updatedUser = await UserModel.update(req.user.id, updateData);
+    return ok(res, {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 module.exports = {
   login,
   logout,
+  getProfile,
+  updateProfile,
 };

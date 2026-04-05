@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const { errorHandler } = require("./middleware/errorHandler.js");
+const { errorHandler } = require("./src/middleware/errorHandler.js");
 require("dotenv").config();
 // const connectDB = require("./config/db.js");
 
@@ -15,10 +15,10 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/api/auth", require("./routes/auth.js"));
-app.use("/api/dashboard", require("./routes/dashboard.js"));
-app.use("/api/users", require("./routes/users.js"));
-app.use("/api/records", require("./routes/records.js"));
+app.use("/api/auth", require("./src/routes/auth.js"));
+app.use("/api/dashboard", require("./src/routes/dashboard.js"));
+app.use("/api/users", require("./src/routes/users.js"));
+app.use("/api/records", require("./src/routes/records.js"));
 
 app.use(errorHandler);
 app.use((req, res) => {
