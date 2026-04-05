@@ -36,14 +36,6 @@ const login = async (req, res, next) => {
     next(err);
   }
 };
-
-const logout = async (req, res, next) => {
-  try {
-    return ok(res, null, "Logged out successfully");
-  } catch (err) {
-    next(err, "Logout failed", 500);
-  }
-};
 const getProfile = async (req, res, next) => {
   try {
     const user = await UserModel.findById(req.user.id);

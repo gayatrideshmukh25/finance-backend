@@ -12,7 +12,6 @@ const createRecords = async (req, resp, next) => {
     let finalUserId;
     if (req.user.role === "admin") {
       let user_id = await UserModel.getByName(req.body.username);
-      console.log("user_id from getByName:", user_id); // debug
       if (!user_id) {
         return resp.status(400).json({
           message: "user is required for admin",
@@ -45,7 +44,7 @@ const createRecords = async (req, resp, next) => {
 };
 const getRecords = async (req, resp, next) => {
   try {
-    const { date, category, type } = req.query;
+    const { date, category, type } = req.body;
     const filters = {};
     if (date) filters.date = date;
     if (category) filters.category = category;

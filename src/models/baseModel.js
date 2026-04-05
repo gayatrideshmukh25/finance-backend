@@ -28,28 +28,21 @@ class BaseModel {
     const safeOffset = Number(offset) || 0;
     const whereClauses = [];
     const values = [];
+
     for (const [key, value] of Object.entries(filters)) {
       if (value !== undefined && value !== null) {
         whereClauses.push(`${key} = ?`);
-        values.push(value);
+        values.push(value.toLowerCase().trim());
       }
     }
-
     const whereString =
       whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
-
     const query = `
         SELECT * FROM ${this.tableName}
         ${whereString}
         LIMIT ${safeOffset}, ${safeLimit}
       `;
-
-    values.push(safeLimit, safeOffset); // 🔥 MUST
-
-    console.log(query, values); // debug
-
     const [rows] = await db.execute(query, values);
-
     return this.excludeFields(rows);
   }
 
@@ -94,7 +87,7 @@ class BaseModel {
       [id],
     );
 
-    return this.excludeFields(rows[0]); // 🔥 applied
+    return this.excludeFields(rows[0]);
   }
 
   async delete(id) {

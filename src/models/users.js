@@ -11,9 +11,7 @@ class UserModel extends BaseModel {
   }
   async getByName(username) {
     const query = "SELECT id FROM users WHERE username = ?";
-
     const [rows] = await db.execute(query, [username]);
-    console.log("getByName result:", rows[0]?.id || null); // debug
     return rows.length ? rows[0].id : null;
   }
   async findById(id) {

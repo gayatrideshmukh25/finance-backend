@@ -1,31 +1,22 @@
-# 💰 Finance Backend API
+# Finance Backend API
 
-A backend system for managing financial records with **role-based access control**, built using **Node.js, Express, and MySQL**.
+A backend system for managing financial records with role-based access control (RBAC), built using Node.js, Express, and MySQL.
 
----
+### Tech Stack
 
-## 🚀 Features
+- Node.js
+- Express.js
+- MySQL (mysql2)
+- JWT Authentication
+- bcrypt (password hashing)
 
-### 🔐 1. Authentication & Authorization
-
-- JWT-based authentication
-- Role-based access control (RBAC)
-- Roles:
-  - **Admin** → Full access
-  - **Analyst** → Can view and create records
-  - **Viewer** → Can only view dashboard
-
----
-
-### 👤 2. User Management
+### User Management
 
 - Create, update, delete users (Admin only)
 - Assign roles (admin / analyst / viewer)
 - Manage user status (active / inactive)
 
----
-
-### 💳 3. Financial Records Management
+### Financial Records Management
 
 - Create, read, update, delete records
 - Fields:
@@ -40,9 +31,7 @@ A backend system for managing financial records with **role-based access control
   - category
   - date
 
----
-
-### 📊 4. Dashboard APIs
+### Dashboard APIs
 
 - Total Income
 - Total Expenses
@@ -50,185 +39,81 @@ A backend system for managing financial records with **role-based access control
 - Category-wise totals
 - Recent activity
 - Monthly trends
+- Weekly trnds
 
 ---
 
-### 🔒 5. Access Control
+### Access Control
 
-| Action                | Viewer | Analyst        | Admin |
-| --------------------- | ------ | -------------- | ----- |
-| View Dashboard        | ✅     | ✅             | ✅    |
-| View Records          | ❌     | ✅             | ✅    |
-| Create Records        | ❌     | ✅ (self only) | ✅    |
-| Update/Delete Records | ❌     | ❌             | ✅    |
-| Manage Users          | ❌     | ❌             | ✅    |
+| Action                | Viewer | Analyst | Admin |
+| --------------------- | ------ | ------- | ----- |
+| View Dashboard        | ✅     | ✅      | ✅    |
+| View Records          | ❌     | ✅      | ✅    |
+| Create Records        | ❌     | ✅      | ✅    |
+| Update/Delete Records | ❌     | ❌      | ✅    |
+| Manage Users          | ❌     | ❌      | ✅    |
 
----
+### Project Structure
 
-## 🏗️ Project Structure
-
-```
 src/
-  config/         # Database configuration
-  controllers/    # API controllers
-  models/         # Database models (BaseModel, User, Record)
-  routes/         # Route definitions
-  middleware/     # Auth & RBAC middleware
-  utils/          # Helper functions
-  server.js       # Entry point
-```
+config/ # Database configuration
+controllers/ # API controllers
+models/ # Database models (BaseModel, User, Record , dashboard)
+routes/ # Route definitions
+middleware/ # Auth , Error & RBAC middleware
+utils/ # Helper functions
+server.js # Entry point
 
----
+### Setup Instructions
 
-## ⚙️ Tech Stack
+# Clone the repository
 
-- Node.js
-- Express.js
-- MySQL (mysql2)
-- JWT Authentication
-- bcrypt (password hashing)
+    git clone <your-repo-url>
+    cd finance-backend
+    npm install
 
----
+# Create .env file
 
-## 🛠️ Setup Instructions
+    DB_HOST=localhost
+    DB_USER=root
+    DB_PASSWORD=yourpassword
+    DB_NAME=finance_db
+    JWT_SECRET=your_secret_key
+    PORT=3000
 
-### 1. Clone the repository
+# Setup Database
 
-```
-git clone <your-repo-url>
-cd finance-backend
-```
+    mysql -u root -p finance  schema.sql
 
----
+# Start Server
 
-### 2. Install dependencies
+    node server.js
 
-```
-npm install
-```
+#### API Endpoints
 
----
+# Auth
 
-### 3. Setup Environment Variables
+- POST /auth/login
+- GET /auth/getProfile
+- PUT /auth/updateProfile
 
-Create a `.env` file:
+# Users (Admin Only)
 
-```
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=yourpassword
-DB_NAME=finance_db
-JWT_SECRET=your_secret_key
-PORT=5000
-```
+- POST /users → Create user
+- GET /users → List users
+- PUT /users/:id → Update user
+- DELETE /users/:id → Delete user
 
----
+# Records
 
-### 4. Setup Database
+- POST /records/create → Create record
+- POST /records/getAll → List records
+- GET /records/:id → get record by id
+- PUT /records/:id → Update record
+- DELETE /records/:id → Delete record
 
-Run your `schema.sql` file:
+# Dashboard
 
-```
-mysql -u root -p finance_db < schema.sql
-```
-
----
-
-### 5. Start Server
-
-```
-npm start
-```
-
----
-
-## 🔑 Default Admin
-
-Make sure to create an admin user manually or via seed script.
-
----
-
-## 📡 API Endpoints
-
-### 🔐 Auth
-
-- `POST /auth/login`
-- `POST /auth/logout`
-
----
-
-### 👤 Users (Admin Only)
-
-- `POST /users`
-- `GET /users`
-- `PUT /users/:id`
-- `DELETE /users/:id`
-
----
-
-### 💳 Records
-
-- `POST /records`
-- `GET /records`
-- `PUT /records/:id`
-- `DELETE /records/:id`
-
----
-
-### 📊 Dashboard
-
-- `GET /dashboard`
-- `GET /dashboard/summary`
-- `GET /dashboard/analytics`
-
----
-
-## 🔍 Example Request
-
-### Create Record (Admin)
-
-```json
-{
-  "username": "amit",
-  "amount": 3000,
-  "type": "expense",
-  "category": "food",
-  "description": "Lunch"
-}
-```
-
----
-
-## 🧠 Key Design Decisions
-
-- Used a **BaseModel** for reusable CRUD operations
-- Implemented **role-based middleware** for access control
-- Associated records with users using `user_id`
-- Handled validation and error responses properly
-
----
-
-## 🚀 Optional Enhancements
-
-- Pagination
-- Search functionality
-- Soft delete
-- API documentation (Swagger)
-- Unit testing
-
----
-
-## 📌 Conclusion
-
-This project demonstrates a scalable backend design with:
-
-- Clean architecture
-- Secure authentication
-- Role-based access control
-- Real-world financial data handling
-
----
-
-## 👨‍💻 Author
-
-Tanmay Deshmukh
+- GET /dashboard → Overview
+- GET /dashboard/summary → Summary totals
+- GET /dashboard/analytics → Trends & insights

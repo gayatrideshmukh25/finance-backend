@@ -9,7 +9,12 @@ router.post(
   allowRoles("admin", "analyst"),
   ctrl.getRecords,
 );
-router.post("/create", authentication, allowRoles("admin"), ctrl.createRecord);
+router.post(
+  "/create",
+  authentication,
+  allowRoles("admin", "analyst"),
+  ctrl.createRecord,
+);
 router.get(
   "/:id",
   authentication,
