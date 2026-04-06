@@ -16,6 +16,10 @@ A backend system for managing financial records with role-based access control (
 - Assign roles (admin / analyst / viewer)
 - Manage user status (active / inactive)
 
+### Default Admin
+
+Create an admin user manually
+
 ### Financial Records Management
 
 - Create, read, update, delete records
@@ -41,8 +45,6 @@ A backend system for managing financial records with role-based access control (
 - Monthly trends
 - Weekly trnds
 
----
-
 ### Access Control
 
 | Action                | Viewer | Analyst | Admin |
@@ -56,19 +58,19 @@ A backend system for managing financial records with role-based access control (
 ### Project Structure
 
 src/
-config/ # Database configuration
-controllers/ # API controllers
-models/ # Database models (BaseModel, User, Record , dashboard)
-routes/ # Route definitions
-middleware/ # Auth , Error & RBAC middleware
-utils/ # Helper functions
-server.js # Entry point
+config/ -> Database configuration
+controllers/ -> API controllers
+models/ -> Database models (BaseModel, User, Record , dashboard)
+routes/ -> Route definitions
+middleware/ -> Auth , Error & RBAC middleware
+utils/ -> Helper functions
+server.js -> Entry point
 
 ### Setup Instructions
 
 # Clone the repository
 
-    git clone <your-repo-url>
+    git clone https://github.com/gayatrideshmukh25/finance-backend.git
     cd finance-backend
     npm install
 
@@ -83,19 +85,21 @@ server.js # Entry point
 
 # Setup Database
 
-    mysql -u root -p finance  schema.sql
+mysql -u root -p finance_db < schema.sql
 
 # Start Server
 
-    node server.js
+node server.js
+or
+npm start
 
 #### API Endpoints
 
 # Auth
 
 - POST /auth/login
-- GET /auth/getProfile
-- PUT /auth/updateProfile
+- GET /auth/profile
+- PUT /auth/profile
 
 # Users (Admin Only)
 
