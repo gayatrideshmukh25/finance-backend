@@ -1,30 +1,38 @@
 const RecordModel = require("../models/records");
 const UserModel = require("../models/users");
+const { ok, created, fail } = require("../utils/response.js");
 
 const createRecords = async (req, resp, next) => {
   try {
     const { amount, type, category, description, date } = req.body;
     if (!amount || !type || !category) {
-      return resp
-        .status(400)
-        .json({ message: "Amount, Type, and Category are required fields" });
+      return fail({
+        status: 400,
+        success: false,
+        message: "Amount, Type, and Category are required fields",
+      });
     }
     let finalUserId;
     if (req.user.role === "admin") {
       let user_id = await UserModel.getByName(req.body.username);
       if (!user_id) {
-        return resp.status(400).json({
-          message: "user is required for admin",
+        return fail({
+          status: 400,
+          success: false,
+          message: "User not found",
         });
       }
       finalUserId = user_id;
     } else if (req.user.role === "analyst") {
       finalUserId = req.user.id;
     } else {
-      return resp.status(403).json({
+      return fail({
+        status: 403,
+        success: false,
         message: "Viewer not allowed to create records",
       });
     }
+
     const newRecord = await RecordModel.create({
       user_id: finalUserId,
       amount,
@@ -33,7 +41,7 @@ const createRecords = async (req, resp, next) => {
       description,
       date,
     });
-    resp.status(201).json({
+    return created({
       success: true,
       data: newRecord,
       message: "Record created successfully",
@@ -50,7 +58,7 @@ const getRecords = async (req, resp, next) => {
     if (category) filters.category = category;
     if (type) filters.type = type;
     const records = await RecordModel.getAll(filters);
-    resp.json({ success: true, data: records });
+    return ok({ success: true, data: records });
   } catch (err) {
     next(err);
   }
@@ -60,9 +68,9 @@ const getRecordById = async (req, resp, next) => {
   try {
     const record = await RecordModel.getById(req.params.id);
     if (!record) {
-      return resp.status(404).json({ message: "Record Not Found" });
+      return fail({ status: 404, success: false, message: "Record Not Found" });
     }
-    resp.json({ success: true, data: record });
+    return ok({ success: true, data: record });
   } catch (err) {
     next(err);
   }
@@ -72,13 +80,17 @@ const updateRecord = async (req, resp, next) => {
   try {
     const body = req.body;
     if (body.user_id) {
-      return resp.status(400).json({ message: "user_id cannot be updated" });
+      return fail({
+        status: 400,
+        success: false,
+        message: "user_id cannot be updated",
+      });
     }
     const updatedRecord = await RecordModel.update(req.params.id, req.body);
     if (!updatedRecord) {
-      return resp.status(404).json({ message: "Record Not Found" });
+      return fail({ status: 404, success: false, message: "Record Not Found" });
     }
-    resp.json({
+    return ok({
       success: true,
       data: updatedRecord,
       message: "Record updated successfully",
@@ -92,9 +104,9 @@ const deleteRecord = async (req, resp, next) => {
   try {
     const deleted = await RecordModel.delete(req.params.id);
     if (!deleted) {
-      return resp.status(404).json({ message: "Record Not Found" });
+      return fail({ status: 404, success: false, message: "Record Not Found" });
     }
-    resp.json({ success: true, message: "Record Deleted Successfully" });
+    return ok({ success: true, message: "Record Deleted Successfully" });
   } catch (err) {
     next(err);
   }

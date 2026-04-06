@@ -54,17 +54,21 @@ class BaseModel {
   }
 
   async create(recordData) {
-    const columns = Object.keys(recordData).join(", ");
-    const placeholders = Object.keys(recordData)
-      .map(() => "?")
-      .join(", ");
-    const values = Object.values(recordData);
+    try {
+      const columns = Object.keys(recordData).join(", ");
+      const placeholders = Object.keys(recordData)
+        .map(() => "?")
+        .join(", ");
+      const values = Object.values(recordData);
 
-    const query = `INSERT INTO ${this.tableName} (${columns}) VALUES (${placeholders})`;
+      const query = `INSERT INTO ${this.tableName} (${columns}) VALUES (${placeholders})`;
 
-    const [result] = await db.execute(query, values);
-    const excludedData = this.excludeFields(result[0]);
-    return { id: result.insertId, ...excludedData };
+      const [result] = await db.execute(query, values);
+      const excludedData = this.excludeFields(result[0]);
+      return { id: result.insertId, ...excludedData };
+    } catch (err) {
+      throw err;
+    }
   }
 
   async update(id, updateData) {

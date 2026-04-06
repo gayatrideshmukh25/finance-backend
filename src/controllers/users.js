@@ -22,6 +22,9 @@ const createUser = async (req, res, next) => {
     });
     return created(res, newUser, "User created successfully");
   } catch (err) {
+    if (err.code === "ER_DUP_ENTRY") {
+      return fail(res, "Email already exists", 400);
+    }
     next(err);
   }
 };

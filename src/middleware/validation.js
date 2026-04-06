@@ -1,4 +1,5 @@
 const { check, validationResult } = require("express-validator");
+const { fail } = require("../utils/response");
 
 const userValidator = [
   check("username").notEmpty().withMessage("Username required"),
@@ -18,9 +19,7 @@ const validation = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array(),
-    });
+    return fail(res, "Validation failed", 400, errors.array());
   }
 
   next();
