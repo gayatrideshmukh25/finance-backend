@@ -77,6 +77,15 @@ const updateProfile = async (req, res, next) => {
       status: updatedUser.status,
     });
   } catch (err) {
+    if (err.code === "ER_PARSE_ERROR") {
+      fail(
+        res,
+        {
+          message: " No fields provided to update.",
+        },
+        400,
+      );
+    }
     next(err);
   }
 };
